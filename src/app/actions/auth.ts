@@ -5,8 +5,12 @@ import { ZodError } from "zod";
 import { signUpSchema } from "~/schemas";
 import { db } from "~/server/db";
 import bcrypt from "bcrypt";
-import { signIn } from "~/server/auth";
+import { signIn, signOut } from "~/server/auth";
 import { AuthError } from "next-auth";
+
+export async function signout() {
+  await signOut();
+}
 
 export async function authenticate(
   prevState: string | undefined,
