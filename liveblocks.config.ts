@@ -35,6 +35,8 @@ declare global {
       };
     };
 
+    /* eslint-disable @typescript-eslint/no-empty-object-type */
+
     // Custom events, for useBroadcastEvent, useEventListener
     RoomEvent: {};
     // Example has two events, using a union
