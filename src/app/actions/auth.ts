@@ -5,6 +5,28 @@ import { ZodError } from "zod";
 import { signUpSchema } from "~/schemas";
 import { db } from "~/server/db";
 import bcrypt from "bcrypt";
+import { signIn } from "~/server/auth";
+import { AuthError } from "next-auth";
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    // Credentials is provider's name defined by auth/config.ts
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid email or password";
+        default:
+          return "Something went wrong";
+      }
+    }
+    throw error;
+  }
+}
 
 export async function register(
   prevState: string | undefined,
