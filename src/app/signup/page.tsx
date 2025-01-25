@@ -46,7 +46,7 @@ export default function Page() {
           <p className="text-center text-xs text-gray-600">
             Have an account?{" "}
             <Link className="text-blue-400 hover:text-blue-600" href="/signin">
-              Register
+              Sign in
             </Link>
           </p>
           {errorMessage && (
