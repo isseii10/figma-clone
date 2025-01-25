@@ -35,7 +35,6 @@ declare module "next-auth" {
 export const authConfig = {
   providers: [
     Credentials({
-      name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
