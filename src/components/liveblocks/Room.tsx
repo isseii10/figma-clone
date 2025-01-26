@@ -1,7 +1,11 @@
 "use client";
 
 import { LiveList, LiveMap, LiveObject } from "@liveblocks/client";
-import { LiveblocksProvider, RoomProvider } from "@liveblocks/react";
+import {
+  ClientSideSuspense,
+  LiveblocksProvider,
+  RoomProvider,
+} from "@liveblocks/react";
 import { ReactNode } from "react";
 import { Layer } from "~/types";
 
@@ -28,7 +32,20 @@ export const Room = ({
           layerIds: new LiveList([]),
         }}
       >
-        <p></p>
+        <ClientSideSuspense
+          fallback={
+            <div className="h-screan flex flex-col items-center justify-center gap-2">
+              <img
+                src="/figma-logo.svg"
+                alt="Figma logo"
+                className="h-[50px] w-[50px] animate-bounce"
+              />
+              <h1 className="fomt-normal text-sm">Loading</h1>
+            </div>
+          }
+        >
+          {children}
+        </ClientSideSuspense>
       </RoomProvider>
     </LiveblocksProvider>
   );
