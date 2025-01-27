@@ -12,7 +12,7 @@ const Rectangle = ({ id, layer }: { id: string; layer: RectangleLayer }) => {
         height={height}
         fill={fill ? colorToCss(fill) : "#CCC"}
         stroke={stroke ? colorToCss(stroke) : "#CCC"}
-        opacity={opacity}
+        opacity={`${opacity ?? 100}%`}
         rx={cornerRadius ?? 0}
         ry={cornerRadius ?? 0}
       />
