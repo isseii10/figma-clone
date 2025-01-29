@@ -3,16 +3,29 @@
 import { useMutation, useStorage } from "@liveblocks/react";
 import { colorToCss, pointerEventToCanvasPoint } from "~/utils";
 import LayerComponent from "./LayerComponent";
-import { Camera, Layer, LayerType, Point, RectangleLayer } from "~/types";
+import {
+  Camera,
+  CanvasMode,
+  CanvasState,
+  EllipseLayer,
+  Layer,
+  LayerType,
+  Point,
+  RectangleLayer,
+} from "~/types";
 import { LiveObject } from "@liveblocks/client";
 import { nanoid } from "@liveblocks/core";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import ToolsBar from "../toolsbar/ToolsBar";
 
 const MAX_LAYERS = 100;
 
 const Canvas = () => {
   const roomColor = useStorage((root) => root.roomColor);
   const layerIds = useStorage((root) => root.layerIds);
+  const [canvasState, setCanvasState] = useState<CanvasState>({
+    mode: CanvasMode.None,
+  });
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, zoom: 1 });
 
   const insertLayer = useMutation(
@@ -40,6 +53,17 @@ const Canvas = () => {
           stroke: { r: 217, g: 217, b: 217 },
           opacity: 100,
         });
+      } else if (layerType === LayerType.Ellipse) {
+        layer = new LiveObject<EllipseLayer>({
+          type: LayerType.Ellipse,
+          x: position.x,
+          y: position.y,
+          width: 100,
+          height: 100,
+          fill: { r: 217, g: 217, b: 217 },
+          stroke: { r: 217, g: 217, b: 217 },
+          opacity: 100,
+        });
       }
 
       if (layer) {
@@ -54,7 +78,7 @@ const Canvas = () => {
 
   const onPointerUp = useMutation(({}, e: React.PointerEvent) => {
     const point = pointerEventToCanvasPoint(e, camera);
-    insertLayer(LayerType.Rectangle, point);
+    insertLayer(LayerType.Ellipse, point);
   }, []);
 
   return (
@@ -75,6 +99,10 @@ const Canvas = () => {
           </svg>
         </div>
       </main>
+      <ToolsBar
+        canvasState={canvasState}
+        setCanvasState={(newState) => setCanvasState(newState)}
+      />
     </div>
   );
 };
