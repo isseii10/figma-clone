@@ -74,16 +74,21 @@ export type Point = {
   y: number;
 };
 
-export enum CanvasMode {
-  None,
-  Inserting,
-}
-
 export type CanvasState =
   | {
       mode: CanvasMode.None;
     }
   | {
+      mode: CanvasMode.Dragging;
+      origin: Point | null;
+    }
+  | {
       mode: CanvasMode.Inserting;
       layerType: LayerType.Rectangle | LayerType.Ellipse | LayerType.Text;
     };
+
+export enum CanvasMode {
+  None,
+  Dragging,
+  Inserting,
+}
