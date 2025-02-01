@@ -76,10 +76,17 @@ const Canvas = () => {
     [],
   );
 
-  const onPointerUp = useMutation(({}, e: React.PointerEvent) => {
-    const point = pointerEventToCanvasPoint(e, camera);
-    insertLayer(LayerType.Ellipse, point);
-  }, []);
+  const onPointerUp = useMutation(
+    ({}, e: React.PointerEvent) => {
+      const point = pointerEventToCanvasPoint(e, camera);
+      if (canvasState.mode === CanvasMode.None) {
+        setCanvasState({ mode: CanvasMode.None });
+      } else if (canvasState.mode === CanvasMode.Inserting) {
+        insertLayer(canvasState.layerType, point);
+      }
+    },
+    [canvasState, setCanvasState, insertLayer],
+  );
 
   return (
     <div className="flex h-screen w-full">
