@@ -1,12 +1,21 @@
 import { type EllipseLayer } from "~/types";
 import { colorToCss } from "~/utils";
 
-const Ellipse = ({ id, layer }: { id: string; layer: EllipseLayer }) => {
+const Ellipse = ({
+  id,
+  layer,
+  onPointerDown,
+}: {
+  id: string;
+  layer: EllipseLayer;
+  onPointerDown: (e: React.PointerEvent, layerId: string) => void;
+}) => {
   const { x, y, width, height, fill, stroke, opacity } = layer;
 
   return (
     <g>
       <ellipse
+        onPointerDown={(e) => onPointerDown(e, id)}
         style={{ transform: `translate(${x}px, ${y}px)` }}
         fill={fill ? colorToCss(fill) : "#CCC"}
         stroke={stroke ? colorToCss(stroke) : "#CCC"}

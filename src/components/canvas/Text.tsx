@@ -3,7 +3,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { type TextLayer } from "~/types";
 import { colorToCss } from "~/utils";
 
-const Text = ({ id, layer }: { id: string; layer: TextLayer }) => {
+const Text = ({
+  id,
+  layer,
+  onPointerDown,
+}: {
+  id: string;
+  layer: TextLayer;
+  onPointerDown: (e: React.PointerEvent, layerId: string) => void;
+}) => {
   const {
     x,
     y,
@@ -81,6 +89,7 @@ const Text = ({ id, layer }: { id: string; layer: TextLayer }) => {
         </foreignObject>
       ) : (
         <text
+          onPointerDown={(e) => onPointerDown(e, id)}
           x={x}
           y={y}
           fontSize={fontSize}

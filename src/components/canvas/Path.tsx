@@ -8,6 +8,7 @@ const Path = ({
   fill,
   opacity,
   points,
+  onPointerDown,
 }: {
   x: number;
   y: number;
@@ -15,6 +16,7 @@ const Path = ({
   fill: string;
   opacity: number;
   points: number[][];
+  onPointerDown?: (e: React.PointerEvent) => void;
 }) => {
   const pathData = getSvgPathFromStroke(
     getStroke(points, {
@@ -26,6 +28,7 @@ const Path = ({
   );
   return (
     <path
+      onPointerDown={onPointerDown}
       style={{ transform: `translate(${x}px, ${y}px)` }}
       d={pathData}
       fill={fill}

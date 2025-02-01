@@ -1,12 +1,21 @@
 import { type RectangleLayer } from "~/types";
 import { colorToCss } from "~/utils";
 
-const Rectangle = ({ id, layer }: { id: string; layer: RectangleLayer }) => {
+const Rectangle = ({
+  id,
+  layer,
+  onPointerDown,
+}: {
+  id: string;
+  layer: RectangleLayer;
+  onPointerDown: (e: React.PointerEvent, layerId: string) => void;
+}) => {
   const { x, y, width, height, fill, stroke, opacity, cornerRadius } = layer;
 
   return (
     <g>
       <rect
+        onPointerDown={(e) => onPointerDown(e, id)}
         style={{ transform: `translate(${x}px, ${y}px)` }}
         width={width}
         height={height}
