@@ -16,6 +16,7 @@ import {
   LayerType,
   Point,
   RectangleLayer,
+  TextLayer,
 } from "~/types";
 import { LiveObject } from "@liveblocks/client";
 import { nanoid } from "@liveblocks/core";
@@ -66,6 +67,21 @@ const Canvas = () => {
           y: position.y,
           width: 100,
           height: 100,
+          fill: { r: 217, g: 217, b: 217 },
+          stroke: { r: 217, g: 217, b: 217 },
+          opacity: 100,
+        });
+      } else if (layerType === LayerType.Text) {
+        layer = new LiveObject<TextLayer>({
+          type: LayerType.Text,
+          x: position.x,
+          y: position.y,
+          height: 100,
+          width: 100,
+          fontSize: 16,
+          text: "Text",
+          fontWeight: 400,
+          fontFamily: "Inter",
           fill: { r: 217, g: 217, b: 217 },
           stroke: { r: 217, g: 217, b: 217 },
           opacity: 100,

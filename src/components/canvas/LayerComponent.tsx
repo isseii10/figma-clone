@@ -5,6 +5,7 @@ import Rectangle from "./Rectangle";
 import Ellipse from "./Ellipse";
 import Path from "./Path";
 import { colorToCss } from "~/utils";
+import Text from "./Text";
 
 const LayerComponent = memo(({ id }: { id: string }) => {
   const layer = useStorage((root) => root.layers.get(id));
@@ -29,13 +30,10 @@ const LayerComponent = memo(({ id }: { id: string }) => {
         />
       );
     case LayerType.Text:
+      return <Text id={id} layer={layer} />;
+    default:
+      return null;
   }
-
-  return (
-    <g>
-      <rect x={0} y={0} width={200} height={200} fill="#FF0000" />
-    </g>
-  );
 });
 
 LayerComponent.displayName = "LayerComponent";
