@@ -98,7 +98,11 @@ const Canvas = () => {
           className="h-full w-full touch-none"
         >
           <svg onPointerUp={onPointerUp} className="h-full w-full">
-            <g>
+            <g
+              style={{
+                transform: `translate(${camera.x}px, ${camera.y}px) scale(${camera.zoom})`,
+              }}
+            >
               {layerIds?.map((layerId) => (
                 <LayerComponent key={layerId} id={layerId} />
               ))}
@@ -109,6 +113,14 @@ const Canvas = () => {
       <ToolsBar
         canvasState={canvasState}
         setCanvasState={(newState) => setCanvasState(newState)}
+        zoomIn={() => {
+          setCamera((camera) => ({ ...camera, zoom: camera.zoom + 0.1 }));
+        }}
+        zoomOut={() => {
+          setCamera((camera) => ({ ...camera, zoom: camera.zoom - 0.1 }));
+        }}
+        canZoomIn={camera.zoom < 2}
+        canZoomOut={camera.zoom > 0.5}
       />
     </div>
   );
