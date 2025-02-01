@@ -91,7 +91,7 @@ const Text = ({
         <text
           onPointerDown={(e) => onPointerDown(e, id)}
           x={x}
-          y={y}
+          y={y + fontSize}
           fontSize={fontSize}
           fontWeight={fontWeight}
           fontFamily={fontFamily}
