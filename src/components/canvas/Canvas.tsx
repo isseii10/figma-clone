@@ -91,9 +91,39 @@ const Canvas = () => {
         setCanvasState({ mode: CanvasMode.None });
       } else if (canvasState.mode === CanvasMode.Inserting) {
         insertLayer(canvasState.layerType, point);
+      } else if (canvasState.mode === CanvasMode.Dragging) {
+        setCanvasState({ mode: CanvasMode.Dragging, origin: null });
       }
     },
     [canvasState, setCanvasState, insertLayer],
+  );
+
+  const onPointerDown = useMutation(
+    ({}, e: React.PointerEvent) => {
+      const point = pointerEventToCanvasPoint(e, camera);
+      if (canvasState.mode === CanvasMode.Dragging) {
+        setCanvasState({ mode: CanvasMode.Dragging, origin: point });
+      }
+    },
+    [camera, canvasState.mode, setCanvasState],
+  );
+
+  const onPointerMove = useMutation(
+    ({}, e: React.PointerEvent) => {
+      if (
+        canvasState.mode === CanvasMode.Dragging &&
+        canvasState.origin !== null
+      ) {
+        const deltaX = e.movementX;
+        const deltaY = e.movementY;
+        setCamera((camera) => ({
+          x: camera.x + deltaX,
+          y: camera.y + deltaY,
+          zoom: camera.zoom,
+        }));
+      }
+    },
+    [camera, setCamera, canvasState],
   );
 
   return (
@@ -108,6 +138,8 @@ const Canvas = () => {
           <svg
             onWheel={onWheel}
             onPointerUp={onPointerUp}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
             className="h-full w-full"
           >
             <g
