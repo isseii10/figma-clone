@@ -3,6 +3,7 @@ import SelectionButton from "./SelectionButton";
 import ShapesSelectionButton from "./ShapesSelectionButton";
 import ZoomInButton from "./ZoomInButton";
 import ZoomOutButton from "./ZoomOutButton";
+import PencilButton from "./PencilButton";
 
 const ToolsBar = ({
   canvasState,
@@ -50,6 +51,10 @@ const ToolsBar = ({
               layerType,
             })
           }
+        />
+        <PencilButton
+          isActive={canvasState.mode === CanvasMode.Pencil}
+          onClick={() => setCanvasState({ mode: CanvasMode.Pencil })}
         />
         <div className="w-[1px] self-stretch bg-black/10" />
         <div className="flex items-center justify-center">
