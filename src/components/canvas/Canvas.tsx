@@ -15,7 +15,7 @@ import {
 } from "~/types";
 import { LiveObject } from "@liveblocks/client";
 import { nanoid } from "@liveblocks/core";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import ToolsBar from "../toolsbar/ToolsBar";
 
 const MAX_LAYERS = 100;
@@ -76,6 +76,14 @@ const Canvas = () => {
     [],
   );
 
+  const onWheel = useCallback((e: React.WheelEvent) => {
+    setCamera((camera) => ({
+      x: camera.x - e.deltaX,
+      y: camera.y - e.deltaY,
+      zoom: camera.zoom,
+    }));
+  }, []);
+
   const onPointerUp = useMutation(
     ({}, e: React.PointerEvent) => {
       const point = pointerEventToCanvasPoint(e, camera);
@@ -97,7 +105,11 @@ const Canvas = () => {
           }}
           className="h-full w-full touch-none"
         >
-          <svg onPointerUp={onPointerUp} className="h-full w-full">
+          <svg
+            onWheel={onWheel}
+            onPointerUp={onPointerUp}
+            className="h-full w-full"
+          >
             <g
               style={{
                 transform: `translate(${camera.x}px, ${camera.y}px) scale(${camera.zoom})`,
