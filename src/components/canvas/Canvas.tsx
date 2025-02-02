@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useHistory,
   useMutation,
   useMyPresence,
   useSelf,
@@ -44,6 +45,9 @@ const Canvas = () => {
     mode: CanvasMode.None,
   });
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, zoom: 1 });
+  const history = useHistory();
+  const canRedo = history.canRedo();
+  const canUndo = history.canUndo();
 
   const onLayerPointerDown = useMutation(
     ({ self, setMyPresence }, e: React.PointerEvent, layerId: string) => {
@@ -53,21 +57,25 @@ const Canvas = () => {
       ) {
         return;
       }
+
+      history.pause();
+
       e.stopPropagation();
       if (!self.presence.selection.includes(layerId)) {
-        setMyPresence({ selection: [layerId] });
+        setMyPresence({ selection: [layerId] }, { addToHistory: true });
       }
       const point = pointerEventToCanvasPoint(e, camera);
       setCanvasState({ mode: CanvasMode.Translating, current: point });
     },
-    [canvasState.mode, camera],
+    [canvasState.mode, camera, history],
   );
 
   const onResizeHandlePointerDown = useCallback(
     (corner: Side, initialBounds: XYWH) => {
+      history.pause();
       setCanvasState({ mode: CanvasMode.Resizing, initialBounds, corner });
     },
-    [],
+    [history],
   );
 
   const insertLayer = useMutation(
@@ -210,7 +218,7 @@ const Canvas = () => {
 
   const unselectLayers = useMutation(({ self, setMyPresence }) => {
     if (self.presence.selection.length > 0) {
-      setMyPresence({ selection: [] });
+      setMyPresence({ selection: [] }, { addToHistory: true });
     }
   }, []);
 
@@ -267,8 +275,9 @@ const Canvas = () => {
       } else {
         setCanvasState({ mode: CanvasMode.None });
       }
+      history.resume();
     },
-    [canvasState, setCanvasState, insertLayer],
+    [canvasState, setCanvasState, insertLayer, unselectLayers, history],
   );
 
   const onPointerDown = useMutation(
@@ -366,6 +375,10 @@ const Canvas = () => {
         }}
         canZoomIn={camera.zoom < 2}
         canZoomOut={camera.zoom > 0.5}
+        redo={() => history.redo()}
+        undo={() => history.undo()}
+        canRedo={canRedo}
+        canUndo={canUndo}
       />
     </div>
   );
