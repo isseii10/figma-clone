@@ -30,10 +30,11 @@ import {
 } from "~/types";
 import { LiveObject } from "@liveblocks/client";
 import { nanoid } from "@liveblocks/core";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ToolsBar from "../toolsbar/ToolsBar";
 import Path from "./Path";
 import SelectionBox from "./SelectionBox";
+import useDeleteLayers from "~/hooks/useDeleteLayers";
 
 const MAX_LAYERS = 100;
 
@@ -44,10 +45,59 @@ const Canvas = () => {
   const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
   });
+  const deleteLayers = useDeleteLayers();
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, zoom: 1 });
   const history = useHistory();
   const canRedo = history.canRedo();
   const canUndo = history.canUndo();
+
+  const selectAllLayers = useMutation(
+    ({ setMyPresence }) => {
+      if (layerIds) {
+        setMyPresence({ selection: [...layerIds] }, { addToHistory: true });
+      }
+    },
+    [layerIds],
+  );
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      const activeElement = document.activeElement;
+      const isInputField =
+        activeElement &&
+        (activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA");
+      if (isInputField) {
+        return;
+      }
+
+      switch (e.key) {
+        case "Backspace":
+          deleteLayers();
+          break;
+        case "z":
+          if (e.ctrlKey || e.metaKey) {
+            if (e.shiftKey) {
+              history.redo();
+            } else {
+              history.undo();
+            }
+          }
+          break;
+        case "a":
+          if (e.ctrlKey || e.metaKey) {
+            selectAllLayers();
+          }
+
+          break;
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [deleteLayers, history, selectAllLayers]);
 
   const onLayerPointerDown = useMutation(
     ({ self, setMyPresence }, e: React.PointerEvent, layerId: string) => {
@@ -290,6 +340,11 @@ const Canvas = () => {
         setCanvasState({ mode: CanvasMode.Dragging, origin: point });
         return;
       }
+
+      if (canvasState.mode === CanvasMode.Inserting) {
+        return;
+      }
+
       if (canvasState.mode === CanvasMode.Pencil) {
         startDrawing(point, e.pressure);
         return;
