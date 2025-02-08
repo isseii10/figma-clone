@@ -2,7 +2,7 @@
 
 import { useMutation, useOthers, useSelf, useStorage } from "@liveblocks/react";
 import Link from "next/link";
-import { colorToCss, hexToRgb } from "~/utils";
+import { colorToCss, connectionIdToColor, hexToRgb } from "~/utils";
 import { PiPathLight, PiSidebarSimpleThin } from "react-icons/pi";
 import Image from "next/image";
 import { Color, LayerType } from "~/types";
@@ -14,6 +14,7 @@ import { BsCircleHalf } from "react-icons/bs";
 import { RiRoundedCorner } from "react-icons/ri";
 import ColorPicker from "./ColorPicker";
 import Dropdown from "./Dropdown";
+import UserAvatar from "./UserAvatar";
 
 const Sidebars = ({
   leftIsMinimized,
@@ -202,6 +203,17 @@ const Sidebars = ({
         <div
           className={`fixed ${leftIsMinimized && layer ? "bottom-3 right-3 top-3 rounded-xl" : ""} ${!leftIsMinimized && !layer ? "h-screen" : ""} ${!leftIsMinimized && layer ? "bottom-0 top-0 h-screen" : ""} right-0 flex w-[240px] flex-col border-l border-gray-200 bg-white`}
         >
+          <div className="flex items-center justify-between pr-2">
+            <div className="flex w-full max-w-36 gap-2 overflow-x-auto p-3 text-xs">
+              {me && (
+                <UserAvatar
+                  color={connectionIdToColor(me.connectionId)}
+                  name={me.info.name}
+                />
+              )}
+            </div>
+            <p>Share button </p>
+          </div>
           <div className="border-b border-gray-200" />
           {layer ? (
             <>
@@ -391,7 +403,17 @@ const Sidebars = ({
           )}
         </div>
       ) : (
-        <div></div>
+        <div className="fixed right-3 top-3 flex h-[48px] w-[250px] items-center justify-between rounded-xl border bg-white pr-2">
+          <div className="flex w-full max-w-36 gap-2 overflow-x-auto p-3 text-xs">
+            {me && (
+              <UserAvatar
+                color={connectionIdToColor(me.connectionId)}
+                name={me.info.name}
+              />
+            )}
+          </div>
+          <p>Share menu </p>
+        </div>
       )}
     </>
   );
