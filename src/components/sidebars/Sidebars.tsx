@@ -211,6 +211,13 @@ const Sidebars = ({
                   name={me.info.name}
                 />
               )}
+              {others.map((other) => (
+                <UserAvatar
+                  key={other.connectionId}
+                  color={connectionIdToColor(other.connectionId)}
+                  name={other.info.name}
+                />
+              ))}
             </div>
             <p>Share button </p>
           </div>
@@ -411,6 +418,13 @@ const Sidebars = ({
                 name={me.info.name}
               />
             )}
+            {others.map((other) => (
+              <UserAvatar
+                key={other.connectionId}
+                color={connectionIdToColor(other.connectionId)}
+                name={other.info.name}
+              />
+            ))}
           </div>
           <p>Share menu </p>
         </div>
