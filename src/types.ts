@@ -79,6 +79,9 @@ export type CanvasState =
       mode: CanvasMode.None;
     }
   | {
+      mode: CanvasMode.RightClick;
+    }
+  | {
       mode: CanvasMode.Dragging;
       origin: Point | null;
     }
@@ -117,6 +120,7 @@ export enum CanvasMode {
   Translating, // select layers, move them around, resize
   SelectionNet,
   Pressing,
+  RightClick,
 }
 
 export type XYWH = {

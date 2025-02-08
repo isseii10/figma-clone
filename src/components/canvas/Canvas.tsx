@@ -35,6 +35,7 @@ import ToolsBar from "../toolsbar/ToolsBar";
 import Path from "./Path";
 import SelectionBox from "./SelectionBox";
 import useDeleteLayers from "~/hooks/useDeleteLayers";
+import SelectionTools from "./SelectionTools";
 
 const MAX_LAYERS = 100;
 
@@ -114,8 +115,13 @@ const Canvas = () => {
       if (!self.presence.selection.includes(layerId)) {
         setMyPresence({ selection: [layerId] }, { addToHistory: true });
       }
-      const point = pointerEventToCanvasPoint(e, camera);
-      setCanvasState({ mode: CanvasMode.Translating, current: point });
+
+      if (e.nativeEvent.button === 2) {
+        setCanvasState({ mode: CanvasMode.RightClick });
+      } else {
+        const point = pointerEventToCanvasPoint(e, camera);
+        setCanvasState({ mode: CanvasMode.Translating, current: point });
+      }
     },
     [canvasState.mode, camera, history],
   );
@@ -186,6 +192,7 @@ const Canvas = () => {
         liveLayers.set(layerId, layer);
 
         setMyPresence({ selection: [layerId] }, { addToHistory: true });
+        setCanvasState({ mode: CanvasMode.None });
       }
     },
     [],
@@ -312,6 +319,8 @@ const Canvas = () => {
 
   const onPointerUp = useMutation(
     ({}, e: React.PointerEvent) => {
+      if (canvasState.mode === CanvasMode.RightClick) return;
+
       const point = pointerEventToCanvasPoint(e, camera);
       if (
         canvasState.mode === CanvasMode.None ||
@@ -413,11 +422,13 @@ const Canvas = () => {
     },
     [
       camera,
-      setCamera,
       canvasState,
+      startMultiSelection,
+      updateSelectionNet,
+      setCamera,
+      translateSelectedLayers,
       continueDrawing,
       resizeSelectedLayer,
-      updateSelectionNet,
     ],
   );
 
@@ -430,12 +441,14 @@ const Canvas = () => {
           }}
           className="h-full w-full touch-none"
         >
+          <SelectionTools camera={camera} canvasMode={canvasState.mode} />
           <svg
             onWheel={onWheel}
             onPointerUp={onPointerUp}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             className="h-full w-full"
+            onContextMenu={(e) => e.preventDefault()}
           >
             <g
               style={{
