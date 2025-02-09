@@ -88,6 +88,7 @@ const RoomsView = ({
                 selected={selected === room.id}
                 select={() => setSelected(room.id)}
                 navigateTo={() => router.push("/dashboard/" + room.id)}
+                canEdit={viewMode === "owns"}
               />
             </React.Fragment>
           );
@@ -104,6 +105,7 @@ const SingleRoom = ({
   selected,
   select,
   navigateTo,
+  canEdit,
 }: {
   id: string;
   title: string;
@@ -112,6 +114,7 @@ const SingleRoom = ({
   selected: boolean;
   select: () => void;
   navigateTo: () => void;
+  canEdit: boolean;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
@@ -159,7 +162,7 @@ const SingleRoom = ({
       >
         <p className="text-md select-none font-medium">{title}</p>
       </div>
-      {isEditing ? (
+      {isEditing && canEdit ? (
         <input
           type="text"
           value={editedTitle}

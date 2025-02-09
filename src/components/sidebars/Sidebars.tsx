@@ -15,13 +15,21 @@ import { RiRoundedCorner } from "react-icons/ri";
 import ColorPicker from "./ColorPicker";
 import Dropdown from "./Dropdown";
 import UserAvatar from "./UserAvatar";
+import { User } from "@prisma/client";
+import ShareMenu from "./ShareMenu";
 
 const Sidebars = ({
   leftIsMinimized,
   setLeftIsMinimized,
+  roomName,
+  roomId,
+  othersWithAccessToRoom,
 }: {
   leftIsMinimized: boolean;
   setLeftIsMinimized: (v: boolean) => void;
+  roomName: string;
+  roomId: string;
+  othersWithAccessToRoom: User[];
 }) => {
   const me = useSelf();
   const others = useOthers();
@@ -121,7 +129,7 @@ const Sidebars = ({
               />
             </div>
             <h2 className="mt-2 scroll-m-20 text-[13px] font-medium">
-              Roomname
+              {roomName}
             </h2>
           </div>
           <div className="border-b border-gray-200" />
@@ -191,7 +199,7 @@ const Sidebars = ({
               alt="figma logo"
             />
           </Link>
-          <h2 className="scroll-m-20 text-[13px] font-medium">Roomname</h2>
+          <h2 className="scroll-m-20 text-[13px] font-medium">{roomName}</h2>
           <PiSidebarSimpleThin
             className="h-5 w-5 cursor-pointer"
             onClick={() => setLeftIsMinimized(false)}
@@ -219,7 +227,10 @@ const Sidebars = ({
                 />
               ))}
             </div>
-            <p>Share button </p>
+            <ShareMenu
+              roomId={roomId}
+              othersWithAccessToRoom={othersWithAccessToRoom}
+            />
           </div>
           <div className="border-b border-gray-200" />
           {layer ? (
@@ -426,7 +437,10 @@ const Sidebars = ({
               />
             ))}
           </div>
-          <p>Share menu </p>
+          <ShareMenu
+            roomId={roomId}
+            othersWithAccessToRoom={othersWithAccessToRoom}
+          />
         </div>
       )}
     </>
