@@ -61,8 +61,9 @@ const SelectionTools = ({
   const selectionBounds = useSelectionBounds();
   if (!selectionBounds) return null;
 
-  const x = selectionBounds.width / 2 + selectionBounds.x + camera.x;
-  const y = selectionBounds.y + camera.y;
+  const x =
+    (selectionBounds.width / 2 + selectionBounds.x) * camera.zoom + camera.x;
+  const y = selectionBounds.y * camera.zoom + camera.y;
 
   if (canvasMode !== CanvasMode.RightClick) return null;
 
