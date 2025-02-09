@@ -10,7 +10,7 @@ const Page = async () => {
   const session = await auth();
   const user = await db.user.findUniqueOrThrow({
     where: { id: session?.user.id },
-    include: { ownedRooms: true, RoomInvites: { include: { room: true } } },
+    include: { ownedRooms: true, roomInvites: { include: { room: true } } },
   });
   return (
     <div className="flex h-screen w-full">
@@ -25,7 +25,7 @@ const Page = async () => {
           <CreateRoom />
           <RoomsView
             ownedRooms={user.ownedRooms}
-            roomInvites={user.RoomInvites.map((invite) => invite.room)}
+            roomInvites={user.roomInvites.map((invite) => invite.room)}
           />
         </div>
       </div>

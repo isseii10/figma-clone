@@ -13,7 +13,7 @@ export const POST = async (req: Request) => {
     where: { id: userSession?.user.id },
     include: {
       ownedRooms: true,
-      RoomInvites: { include: { room: true } },
+      roomInvites: { include: { room: true } },
     },
   });
 
