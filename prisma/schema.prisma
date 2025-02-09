@@ -65,7 +65,7 @@ model User {
   sessions      Session[]
   posts         Post[]
   ownedRooms    Room[]       @relation("RoomOwner")
-  RoomInvites   RoomInvite[]
+  roomInvites   RoomInvite[]
 }
 
 model VerificationToken {
@@ -77,12 +77,12 @@ model VerificationToken {
 }
 
 model Room {
-  id         String       @id @default(cuid())
-  owner      User         @relation("RoomOwner", fields: [ownerId], references: [id])
-  ownerId    String
-  title      String       @default("Untitled")
-  RoomInvite RoomInvite[]
-  createdAt  DateTime     @default(now())
+  id          String       @id @default(cuid())
+  owner       User         @relation("RoomOwner", fields: [ownerId], references: [id])
+  ownerId     String
+  title       String       @default("Untitled")
+  roomInvites RoomInvite[]
+  createdAt   DateTime     @default(now())
 }
 
 model RoomInvite {
