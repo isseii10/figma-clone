@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
 import { db } from "~/server/db";
@@ -19,4 +20,43 @@ export const createRoom = async () => {
   });
 
   redirect("/dashboard/" + room.id);
+};
+
+export const updateRoomTitle = async (title: string, id: string) => {
+  const session = await auth();
+
+  if (!session?.user.id) throw new Error("No user id found.");
+
+  await db.room.findUniqueOrThrow({
+    where: {
+      id: id,
+      ownerId: session.user.id,
+    },
+  });
+
+  await db.room.update({
+    where: { id: id },
+    data: { title: title },
+  });
+
+  revalidatePath("dashboard");
+};
+
+export const deleteRoom = async (id: string) => {
+  const session = await auth();
+
+  if (!session?.user.id) throw new Error("No user id found.");
+
+  await db.room.findUniqueOrThrow({
+    where: {
+      id: id,
+      ownerId: session.user.id,
+    },
+  });
+
+  await db.room.delete({
+    where: { id: id },
+  });
+
+  revalidatePath("dashboard");
 };
